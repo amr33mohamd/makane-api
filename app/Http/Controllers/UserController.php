@@ -119,4 +119,21 @@ class UserController extends Controller
         }
 
     }
-}
+    public function user(Request $request){
+        $user = Auth::user();
+        return response()->json(['user'=>$user]);
+    }
+    public function update_user(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name'=>'required',
+            'email' => 'nullable|unique:users',
+            'password'=> 'nullable|min:6',
+
+        ]);
+        $user = Auth::user();
+        $user->update(array_filter($request->all()));
+        return response()->json(['status' => 'done']);
+
+    }
+    }

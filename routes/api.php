@@ -22,15 +22,33 @@ Route::get('/store','StoreController@store');
 //reserve
 Route::post('/reserve','ReservationsController@reserve');
 Route::post('/reservations','ReservationsController@reservations');
+Route::post('/cancel_reservation','ReservationsController@cancel');
+Route::post('/user-review','ReservationsController@rate');
+Route::post('/not-arrived','ReservationsController@notArrived');
+Route::post('/arrived','ReservationsController@arrived');
 
 
+
+//coupons
 Route::post('/coupons','CouponsController@coupons');
+Route::post('/store-coupons','CouponsController@store_coupons');
+Route::post('/use-coupon','CouponsController@use_coupon');
+Route::post('/buy_coupon','CouponsController@buy_coupon');
+
+
+//pay routes
+Route::get('/pay-month','PayController@pay_month');
+Route::post('/pay-month-response','PayController@pay_month_response');
+
+
 
 
 //auth routes ----------->
 Route::get('/signup','UserController@SignUp');
 Route::get('/verify','UserController@verify');
 Route::get('/login','UserController@login');
+Route::post('/user','UserController@user');
+Route::post('/update_user','UserController@update_user');
 
 
 

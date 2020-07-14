@@ -69,6 +69,9 @@ class User extends Authenticatable implements JWTSubject
     public function StoreReviews(){
         return $this->hasMany('App\Reviews','store_id','id');
     }
+    public function UserReviews(){
+        return $this->hasMany('App\StoreReviews','user_id','id');
+    }
     public function ReviewerReviews(){
         return $this->hasMany('App\Reviews','reviewer_id','id');
     }
@@ -89,12 +92,23 @@ class User extends Authenticatable implements JWTSubject
     }
     public function getRatingAttribute()
     {
-        if($this->StoreReviews->avg('rate') == null){
-            return 0;
+        if($this->type == 2){
+            if($this->StoreReviews->avg('rate') == null){
+                return 0;
+            }
+            else{
+                return $this->StoreReviews->avg('rate');
+            }
         }
         else{
-            return $this->StoreReviews->avg('rate');
+            if($this->UserReviews->avg('rate') == null){
+                return 0;
+            }
+            else{
+                return $this->UserReviews->avg('rate');
+            }
         }
+
     }
 
 
