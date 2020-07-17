@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Images;
 use App\Invitations;
 use App\Settings;
+use App\SpecialEvents;
 use App\User;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
@@ -73,11 +75,10 @@ class UserController extends Controller
     }
     public function verify(Request $request){
         $validatedData = $request->validate([
-            'code'=>'required',
-            'id'=>'required'
+            'code'=>'required'
         ]);
 
-        $user = User::where('id',$request->id)->first();
+        $user = Auth::user();
         $inviter = User::where('invite_code',$user->invited_code);
 
         if($user->verify_code == $request->code){
@@ -121,7 +122,8 @@ class UserController extends Controller
     }
     public function user(Request $request){
         $user = Auth::user();
-        return response()->json(['user'=>$user]);
+        $data = User::where('id',$user->id)->with('StoreImages')->with('SpecialEvents')->first();
+        return response()->json(['user'=>$data]);
     }
     public function update_user(Request $request)
     {
@@ -136,4 +138,61 @@ class UserController extends Controller
         return response()->json(['status' => 'done']);
 
     }
+    public function uploadImage(Request $request){
+        if(!$request->file('image'))
+            return ['status' => false,'errors' => 'image is required'];
+
+        $image = $request->file('image');
+        $imageName = time().rand(1000,9999).'.'.$image->getClientOriginalExtension();
+        $image->move('images',$imageName);
+
+        return ['status' => true,'message'=>trans('api.upload.file.success'),'file_name'=>$imageName];
+
+    }
+    public function addImage(Request $request){
+        if(!$request->file('image'))
+            return ['status' => false,'errors' => 'image is required'];
+
+        $image = $request->file('image');
+        $imageName = time().rand(1000,9999).'.'.$image->getClientOriginalExtension();
+        $image->move('images',$imageName);
+        $user = Auth::user();
+        Images::create([
+           'image'=>$imageName,
+           'user_id'=>$user->id
+        ]);
+        return ['status' => true];
+    }
+
+    public function deleteImage(Request $request)
+    {
+        Images::find($request->id)->delete();
+        return ['status' => true];
+
+    }
+    public function addEvent(Request $request){
+        $user = Auth::user();
+        SpecialEvents::create([
+           'name'=>$request->name,
+           'time'=>$request->time,
+            'store_id'=>$user->id,
+            'available'=>$request->available,
+            'description'=>'k'
+        ]);
+        return ['status'=>true];
+    }
+    public function deleteEvent(Request $request)
+    {
+        SpecialEvents::find($request->id)->delete();
+        return ['status' => true];
+
+    }
+    public function updateEvent(Request $request)
+    {
+
+        $event = SpecialEvents::find($request->id);
+        $event->update(array_filter($request->all()));
+        return response()->json(['status' => 'done']);
+    }
+
     }

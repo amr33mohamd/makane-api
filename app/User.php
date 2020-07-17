@@ -78,6 +78,9 @@ class User extends Authenticatable implements JWTSubject
     public function SpecialEvents(){
         return $this->hasMany('App\SpecialEvents','store_id','id');
     }
+    public function StoreImages(){
+        return $this->hasMany('App\Images','user_id','id');
+    }
     public function StoreReservations(){
         return $this->hasMany('App\Reservations','store_id','id');
     }

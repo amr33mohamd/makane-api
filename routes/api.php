@@ -45,11 +45,16 @@ Route::post('/pay-month-response','PayController@pay_month_response');
 
 //auth routes ----------->
 Route::get('/signup','UserController@SignUp');
-Route::get('/verify','UserController@verify');
-Route::get('/login','UserController@login');
+Route::post('/verify','UserController@verify');
+Route::post('/login','UserController@login');
 Route::post('/user','UserController@user');
 Route::post('/update_user','UserController@update_user');
-
+Route::post('/upload-image','UserController@uploadImage');
+Route::post('/add-image','UserController@addImage');
+Route::post('/delete-image','UserController@deleteImage');
+Route::post('/add-event','UserController@addEvent');
+Route::post('/delete-event','UserController@deleteEvent');
+Route::post('/edit-event','UserController@editEvent');
 
 
 
