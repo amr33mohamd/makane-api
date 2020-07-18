@@ -7,6 +7,7 @@ use App\Invitations;
 use App\Settings;
 use App\SpecialEvents;
 use App\User;
+use Twilio\Rest\Client as Client;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -56,6 +57,14 @@ class UserController extends Controller
             }
         }
         else{
+            $verify_cod = rand(1000,10000);
+            $account_sid = getenv("TWILIO_SID");
+            $auth_token = getenv("TWILIO_AUTH_TOKEN");
+            $twilio_number = getenv("TWILIO_NUMBER");
+            $client = new Client($account_sid, $auth_token);
+            $client->messages->create('+'.$request->phone,
+                ['from' => $twilio_number, 'body' => 'your verification code is '.$verify_cod] );
+
             $create = User::create([
                 "name"=>$request->name,
                 "email"=>$request->email,
@@ -63,7 +72,7 @@ class UserController extends Controller
                 "country"=>$request->country,
                 "phone"=>$request->phone,
                 "password"=>$request->password,
-                "invite_code"=>rand(1000,10000),
+                "invite_code"=>$verify_cod,
             ]);
         }
         $credentials = request(['email', 'password']);
@@ -194,5 +203,8 @@ class UserController extends Controller
         $event->update(array_filter($request->all()));
         return response()->json(['status' => 'done']);
     }
+//    public function test(Request $request){
+//
+//    }
 
     }

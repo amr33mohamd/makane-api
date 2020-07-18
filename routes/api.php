@@ -45,6 +45,8 @@ Route::post('/pay-month-response','PayController@pay_month_response');
 
 //auth routes ----------->
 Route::get('/signup','UserController@SignUp');
+Route::get('/test','UserController@test');
+
 Route::post('/verify','UserController@verify');
 Route::post('/login','UserController@login');
 Route::post('/user','UserController@user');
