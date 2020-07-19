@@ -21,15 +21,14 @@ class UserController extends Controller
     }
 
     public function SignUp(Request $request){
-        $validatedData = Validator::make(
-            $request->all(),
-            array(
+        $validatedData = $request->validate([
+
             'name' => 'required|max:255',
             'email' => 'required|unique:users',
             'password'=> 'required|min:6',
             'code'=>'nullable',
             'country'=>'required',
-            'phone'=>'required|min:6|unique:users')
+            'phone'=>'required|min:6|unique:users']
         );
 
 
@@ -62,8 +61,8 @@ class UserController extends Controller
             $auth_token = getenv("TWILIO_AUTH_TOKEN");
             $twilio_number = getenv("TWILIO_NUMBER");
             $client = new Client($account_sid, $auth_token);
-            $client->messages->create('+'.$request->phone,
-                ['from' => $twilio_number, 'body' => 'your verification code is '.$verify_cod] );
+//            $client->messages->create('+'.$request->phone,
+//                ['from' => $twilio_number, 'body' => 'your verification code is '.$verify_cod] );
 
             $create = User::create([
                 "name"=>$request->name,
