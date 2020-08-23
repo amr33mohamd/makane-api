@@ -38,6 +38,8 @@ class CreateUsersTable extends Migration
             $table->integer('verify_code');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->integer('smoking')->default('0');
+            $table->integer('outt')->default('0');
             $table->integer('place')->default('1');
             $table->string('invited_code')->nullable();
             $table->rememberToken();

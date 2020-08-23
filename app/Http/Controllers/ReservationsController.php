@@ -7,6 +7,7 @@ use App\Reviews;
 use App\SpecialEvents;
 use App\StoreReviews;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class ReservationsController extends Controller
@@ -34,7 +35,12 @@ class ReservationsController extends Controller
                             'customer_id'=>$user->id,
                             'store_id'=>$store->id,
                             'type'=>1,
-                            'status'=>0
+                            'status'=>0,
+                            'kids'=>$request->kids,
+                            'time'=>Carbon::parse($request->time),
+                            'persons'=>$request->persons,
+                            'smoking'=>$request->smoking,
+                            'outt'=>$request->outt
                         ]);
                         $store->update([
                            'available'=>$store->available -1
@@ -56,7 +62,8 @@ class ReservationsController extends Controller
                             'store_id' => $store->id,
                             'type' => 2,
                             'status' => 0,
-                            'SpecialEvent_id' => $SpecialEvent->id
+                            'SpecialEvent_id' => $SpecialEvent->id,
+                            'time'=>$SpecialEvent->time
                         ]);
                         $SpecialEvent->update([
                             'available' => $SpecialEvent->available - 1

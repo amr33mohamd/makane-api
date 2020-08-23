@@ -21,7 +21,17 @@ class UserController extends Controller
     }
 
     public function SignUp(Request $request){
-        $validatedData = $request->validate([
+
+        $validatedDat = $request->validate([
+
+            'name' => 'required|max:255',
+            'email' => 'required|unique:users',
+            'password'=> 'required|min:6',
+            'code'=>'nullable',
+            'country'=>'required',
+            'phone'=>'required|min:6|unique:users']
+        );
+            $validatedData = \Validator::make(request()->all(), [
 
             'name' => 'required|max:255',
             'email' => 'required|unique:users',
@@ -81,6 +91,65 @@ class UserController extends Controller
 
 
     }
+    public function add_phone(Request $request){
+        $user = Auth::user();
+        $validatedDat = $request->validate([
+            'code'=>'nullable',
+            'phone'=>'required|min:6|unique:users']
+
+            );
+            $validatedData = \Validator::make(request()->all(), [
+                'code'=>'nullable',
+                'phone'=>'required|min:6|unique:users']
+        );
+
+        if($request->code) {
+            $inviter = User::where('invite_code',$request->code);
+            if($inviter->count() > 0){
+                $user->update([
+                    'invited_code'=>$request->code,
+                    'phone'=>$request->phone,
+                    'verified'=>1
+                ]);
+                    $invitaion = Invitations::create([
+                        "invited_id"=>$user->id,
+                        "inviter_id"=>$inviter->first()->id
+                    ]);
+                    $invite_points = Settings::where('attr','invite_points')->first()->value;
+                    $user->update([
+                        'points'=>$invite_points
+                    ]);
+                    $inviter->first()->update([
+                        'points'=>$inviter->first()->points + $invite_points
+                    ]);
+                $user->update([
+                    'verified'=>1
+                ]);
+                return response()->json(['status' => 'done']);
+
+            }
+            else{
+                $validatedData->errors()->add('code', 'code is wrong');
+                return response()->json(['errors'=>$validatedData->errors()->getMessages(),'status'=>'wrong'], 422);
+
+            }
+
+            }
+
+
+
+
+        else{
+            $user->update([
+                'phone'=>$request->phone,
+                'verified'=>1
+
+            ]);
+
+            return response()->json(['status'=>'done'] );
+
+        }
+    }
     public function verify(Request $request){
         $validatedData = $request->validate([
             'code'=>'required'
@@ -128,6 +197,37 @@ class UserController extends Controller
         }
 
     }
+
+    public function social_login(Request $request){
+//        $credentials = request(['email', 'password']);
+
+        if(!$token = Auth::attempt(['email' => $request->email, 'password' => 'Amr33304454'])){
+            $create = User::create([
+                "name"=>$request->email,
+                "email"=>$request->email,
+                "verify_code"=>rand(1000,10000),
+                "country"=>$request->email,
+                "phone"=>0,
+                "password"=>'Amr33304454',
+                "invite_code"=>rand(1000,10000),
+            ]);
+            $token = Auth::attempt(['email' => $request->email, 'password' => 'Amr33304454']);
+
+
+            return response()->json(['token' => $token,'status'=>2]);
+
+        }
+        else{
+            $user = Auth::user();
+            if($user->phone == 0){
+                return response()->json(['token' => $token,'status'=>2]);
+            }
+            else{
+                return response()->json(['status' => '1','user'=>$user,'token'=>$token]);
+            }
+        }
+    }
+
     public function user(Request $request){
         $user = Auth::user();
         $data = User::where('id',$user->id)->with('StoreImages')->with('SpecialEvents')->first();

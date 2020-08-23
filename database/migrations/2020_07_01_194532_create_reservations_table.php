@@ -23,6 +23,11 @@ class CreateReservationsTable extends Migration
             $table->bigInteger('customer_id')->unsigned();
             $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('type')->default('1');
+            $table->time('time');
+            $table->integer('persons');
+            $table->integer('kids')->default('0');
+            $table->integer('smoking')->default('0');
+            $table->integer('outt')->default('0');
             $table->bigInteger('SpecialEvent_id')->nullable()->unsigned();
             $table->foreign('SpecialEvent_id')->nullable()->references('id')->on('special_events')->onDelete('cascade');
             $table->integer('status')->default('0');

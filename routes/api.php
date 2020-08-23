@@ -49,6 +49,9 @@ Route::get('/test','UserController@test');
 
 Route::post('/verify','UserController@verify');
 Route::post('/login','UserController@login');
+Route::post('/social-login','UserController@social_login');
+Route::post('/add-phone','UserController@add_phone');
+
 Route::post('/user','UserController@user');
 Route::post('/update_user','UserController@update_user');
 Route::post('/upload-image','UserController@uploadImage');
