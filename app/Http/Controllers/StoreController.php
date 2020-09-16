@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Settings;
 use App\User;
 use Illuminate\Http\Request;
 use DB;
@@ -45,6 +46,12 @@ class StoreController extends Controller
             'id'=>$request->id ,
         ])->with('StoreReviews.reviewer')->get();
         return response()->json(['store' => $store]);
+
+    }
+
+    public function settings(Request $request){
+        $settings = Settings::all();
+        return response()->json(['settings' => $settings]);
 
     }
 }

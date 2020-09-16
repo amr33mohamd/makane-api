@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 //stores routes ----------->
 Route::get('/stores','StoreController@stores');
 Route::get('/store','StoreController@store');
+Route::get('/settings','StoreController@settings');
+
 
 
 //reserve

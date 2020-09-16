@@ -26,6 +26,7 @@ return [
     |
     */
 
+
     'cloud' => env('FILESYSTEM_CLOUD', 's3'),
 
     /*
@@ -42,6 +43,7 @@ return [
     */
 
     'disks' => [
+        'admin' => [ 'driver' => 'local', 'root' => storage_path('app'), ],
 
         'local' => [
             'driver' => 'local',
