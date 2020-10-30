@@ -24,6 +24,20 @@ class StoreController extends Controller
                     return $query->where('name','like', "%".$search."%");
                 })
                 ->get();
+            $bar = User::query()->where('type','4')->with('SpecialEvents')->with('StoreImages')->
+            orderBy(DB::raw("3959 * acos( cos( radians({$request->input('lat')}) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(-{$request->input('lng')}) ) + sin( radians({$request->input('lat')}) ) * sin(radians(lat)) )"), 'ASC')->with('StoreReviews.reviewer')->
+            when(isset($search) && $search != '',
+                function ($query) use ($search) {
+                    return $query->where('name','like', "%".$search."%");
+                })
+                ->get();
+            $pool = User::query()->where('type','5')->with('SpecialEvents')->with('StoreImages')->
+            orderBy(DB::raw("3959 * acos( cos( radians({$request->input('lat')}) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(-{$request->input('lng')}) ) + sin( radians({$request->input('lat')}) ) * sin(radians(lat)) )"), 'ASC')->with('StoreReviews.reviewer')->
+            when(isset($search) && $search != '',
+                function ($query) use ($search) {
+                    return $query->where('name','like', "%".$search."%");
+                })
+                ->get();
         }
         else{
             $cafes = User::query()->where('type','3')->with('StoreReviews.reviewer')
@@ -36,15 +50,25 @@ class StoreController extends Controller
                     return $query->where('name','like', "%".$search."%");
                 })->with('StoreReviews.reviewer')
                 ->with('StoreImages')->with('SpecialEvents')->get();
+            $bar = User::query()->where('type','4')->when(isset($search) && $search != '',
+                function ($query) use ($search) {
+                    return $query->where('name','like', "%".$search."%");
+                })->with('StoreReviews.reviewer')
+                ->with('StoreImages')->with('SpecialEvents')->get();
+            $pool = User::query()->where('type','5')->when(isset($search) && $search != '',
+                function ($query) use ($search) {
+                    return $query->where('name','like', "%".$search."%");
+                })->with('StoreReviews.reviewer')
+                ->with('StoreImages')->with('SpecialEvents')->get();
 
         }
 
-        return response()->json(['restaurants' => $resturants,'cafes'=>$cafes]);
+        return response()->json(['restaurants' => $resturants,'cafes'=>$cafes,'pool'=>$pool,'bar'=>$bar]);
     }
     public function store(Request $request){
         $store = User::where([
             'id'=>$request->id ,
-        ])->with('StoreReviews.reviewer')->get();
+        ])->with('StoreReviews.reviewer')->with('StoreImages')->with('SpecialEvents')->get();
         return response()->json(['store' => $store]);
 
     }
