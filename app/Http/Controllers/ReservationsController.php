@@ -31,6 +31,7 @@ class ReservationsController extends Controller
 
                     if($store->available >= 1){
                         //normal reservation
+                        $store->notify('New Reservation',"Reservation from $user->email");
                         $create = Reservations::create([
                             'customer_id'=>$user->id,
                             'store_id'=>$store->id,
@@ -56,6 +57,7 @@ class ReservationsController extends Controller
                     //special event one
                     $SpecialEvent = SpecialEvents::find($request->SpecialEvent_id);
                     if($SpecialEvent->available >= 1) {
+                      $store->notify('New Reservation',"Reservation from $user->email");
 
                         $create = Reservations::create([
                             'customer_id' => $user->id,

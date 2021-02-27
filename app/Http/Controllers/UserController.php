@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Validator;
-
+use App\ads;
+use App\contacts;
 class UserController extends Controller
 {
     protected function failedValidation(Validator $validator) {
@@ -214,16 +215,16 @@ class UserController extends Controller
             $token = Auth::attempt(['email' => $request->email, 'password' => 'Amr33304454']);
 
 
-            return response()->json(['token' => $token,'status'=>2]);
+            return response()->json(['token' => $token,'status'=>2,'user'=>Auth::user()]);
 
         }
         else{
             $user = Auth::user();
             if($user->phone == 0){
-                return response()->json(['token' => $token,'status'=>2]);
+                return response()->json(['token' => $token,'status'=>2,'user'=>Auth::user()]);
             }
             else{
-                return response()->json(['status' => '1','user'=>$user,'token'=>$token]);
+                return response()->json(['status' => '1','user'=>$user,'token'=>$token,'user'=>Auth::user()]);
             }
         }
     }
@@ -232,6 +233,19 @@ class UserController extends Controller
         $user = Auth::user();
         $data = User::where('id',$user->id)->with('StoreImages')->with('SpecialEvents')->first();
         return response()->json(['user'=>$data]);
+    }
+    public function contact(Request $request){
+        $user = Auth::user();
+        $contact = contacts::create([
+          'message'=>$request->message,
+          'email'=>$request->email,
+          'user_id'=>$user->id
+        ]);
+        return response()->json(['user'=>$user]);
+    }
+    public function ads(Request $request){
+        $ads = ads::all();
+        return response()->json(['ads'=>$ads]);
     }
     public function update_user(Request $request)
     {

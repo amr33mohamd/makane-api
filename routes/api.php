@@ -63,6 +63,9 @@ Route::post('/add-event','UserController@addEvent');
 Route::post('/delete-event','UserController@deleteEvent');
 Route::post('/edit-event','UserController@editEvent');
 
+Route::post('/contact','UserController@contact');
+Route::get('/ads','UserController@ads');
+
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

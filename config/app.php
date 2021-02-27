@@ -139,6 +139,8 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+         Kreait\Laravel\Firebase\ServiceProvider::class,
+
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
